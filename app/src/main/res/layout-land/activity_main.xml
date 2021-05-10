@@ -26,18 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <fragment
-                android:id="@+id/nav_controller_fragment"
-                android:name="androidx.navigation.fragment.NavHostFragment"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/list_fragment_container"
                 android:layout_width="0dp"
-                app:navGraph="@navigation/mobile_navigation"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_notes"
                 android:layout_width="0dp"
-                android:name="com.example.notes.FragmentNotes"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
         </LinearLayout>

@@ -4,4 +4,6 @@
     <string name="fail">fail</string>
     <string name="default_name">Zel</string>
     <string name="default_info_about_user">default info about user</string>
+    <string name="close">close</string>
+    <string name="open">open</string>
 </resources>
