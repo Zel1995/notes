@@ -31,8 +31,12 @@ public class NoteViewModel extends ViewModel {
         notesLiveData.setValue(noteRepository.getNotes());
     }
 
+    public void updateClicked(int longClickPosition,Note note){
+        noteRepository.updateNote(longClickPosition,note);
+        requestNotes();
+    }
     public void deleteClicked(int longClickPosition) {
         noteRepository.deleteNote(longClickPosition);
-        notesLiveData.postValue(noteRepository.getNotes());
+        requestNotes();
     }
 }

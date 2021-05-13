@@ -17,8 +17,6 @@ import com.example.notes.ui.list.NoteViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -46,29 +44,23 @@ public class AddFragment extends Fragment {
     }
 
     private void initListeners() {
-        btnAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = Objects.requireNonNull(editTitle.getText()).toString();
-                String content = Objects.requireNonNull(editContent.getText()).toString();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                String date = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-                Note note = new Note(title,content,date);
-                viewModel.addClicked(note);
-                editTitle.setText("");
-                editContent.setText("");
-                if(getActivity() instanceof MainActivity){
-                    getActivity().onBackPressed();
-                }
+        btnAddNote.setOnClickListener(v -> {
+            String title = Objects.requireNonNull(editTitle.getText()).toString();
+            String content = Objects.requireNonNull(editContent.getText()).toString();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            String date = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+            Note note = new Note(title,content,date);
+            viewModel.addClicked(note);
+            editTitle.setText("");
+            editContent.setText("");
+            if(getActivity() instanceof MainActivity){
+                getActivity().onBackPressed();
             }
         });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getActivity() instanceof MainActivity){
-                    getActivity().onBackPressed();
-                }}
-        });
+        btnCancel.setOnClickListener(v -> {
+            if(getActivity() instanceof MainActivity){
+                getActivity().onBackPressed();
+            }});
     }
 
 
@@ -76,7 +68,7 @@ public class AddFragment extends Fragment {
         editTitle = view.findViewById(R.id.edit_title);
         editContent = view.findViewById(R.id.edit_content);
         btnAddNote = view.findViewById(R.id.btn_add_note);
-        btnCancel = view.findViewById(R.id.btn_cancel);
+        btnCancel = view.findViewById(R.id.btn_cancel_add);
     }
 
     private void initViewModel() {

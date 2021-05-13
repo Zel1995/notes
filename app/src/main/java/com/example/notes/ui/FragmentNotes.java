@@ -51,13 +51,6 @@ public class FragmentNotes extends Fragment  {
         }
     }
 
-    public Note getNote() {
-        if (getArguments() != null) {
-            return getArguments().getParcelable(NOTE_ARG);
-        }
-        return new Note(getString(R.string.fail), getString(R.string.fail), getString(R.string.fail));
-    }
-
 
 
 }

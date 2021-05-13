@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.notes.R;
 import com.example.notes.domain.Note;
 import com.example.notes.domain.NoteRepositoryImpl;
+import com.example.notes.ui.MainActivity;
+import com.example.notes.ui.edit.EditNoteFragment;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterCli
     private NoteClickListener onListClick;
     NoteViewModel viewModel;
     private NoteAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     public void noteAdapterClickListener(Note note) {
@@ -35,7 +38,7 @@ public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterCli
 
 
     public interface NoteClickListener {
-        public void noteClickListener(Note note);
+        void noteClickListener(Note note);
     }
 
     @Nullable
@@ -63,19 +66,13 @@ public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterCli
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
-        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-                adapter.setData(notes);
-            }
-        });
+        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), notes -> adapter.setData(notes));
 
     }
 
     private void initRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
         adapter = new NoteAdapter(this);
-        List<Note> notes = new NoteRepositoryImpl().getNotes();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         adapter.setListener(this);
         recyclerView.setAdapter(adapter);
@@ -90,14 +87,16 @@ public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterCli
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_open){
-            Toast.makeText(requireContext(),"open",Toast.LENGTH_SHORT).show();
-        }else if(item.getItemId() == R.id.action_update){
-            Toast.makeText(requireContext(),"update",Toast.LENGTH_SHORT).show();
+       if(item.getItemId() == R.id.action_update){
+            if(getActivity() instanceof MainActivity){
+                int position = adapter.getLongClickPosition();
+                ((MainActivity) getActivity()).getRouter().openFragment(EditNoteFragment.newInstance(position,adapter.getNoteByPosition(position)));
+            }
+            return true;
         }else if(item.getItemId() == R.id.action_delete){
             viewModel.deleteClicked(adapter.getLongClickPosition());
             Toast.makeText(requireContext(),"delete",Toast.LENGTH_SHORT).show();
-
+            return true;
         }
         return super.onContextItemSelected(item);
 

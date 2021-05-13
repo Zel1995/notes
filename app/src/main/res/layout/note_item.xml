@@ -13,34 +13,31 @@
         android:orientation="vertical">
         <TextView
             android:id="@+id/item_title"
-            android:drawableStart="@drawable/ic_title"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingStart="6dp"
             android:paddingTop="6dp"
             android:paddingEnd="6dp"
-            android:text="43124124123"
-            android:textSize="23sp" />
+            android:textSize="23sp"
+            app:drawableStartCompat="@drawable/ic_title" />
 
         <TextView
             android:id="@+id/item_date"
-            android:drawableStart="@drawable/ic_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="6dp"
             android:paddingTop="6dp"
             android:paddingEnd="6dp"
-            android:text="123412341234"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:drawableStartCompat="@drawable/ic_time" />
 
         <TextView
             android:id="@+id/item_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:drawableStart="@drawable/ic_note"
             android:padding="6dp"
-            android:text="1523543" />
+            app:drawableStartCompat="@drawable/ic_note" />
 
     </LinearLayout>
 
