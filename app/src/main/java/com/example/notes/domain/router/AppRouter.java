@@ -24,17 +24,14 @@ public class AppRouter {
                 .commit();
 
         FragmentNotes fragmentNotes = (FragmentNotes) fragmentManager.findFragmentById(R.id.fragment_notes);
-        if ((fragmentNotes == null || currentNote != note) && note != null)
+        if ((fragmentNotes == null || currentNote != note) && note != null) {
             fragmentManager
                     .beginTransaction()
                     .replace(R.id.fragment_notes, FragmentNotes.createFragmentNotes(note))
                     .addToBackStack(null)
                     .commit();
-        currentNote = note;
-    }
-
-    public void showEditFragment(Note note) {
-        fragmentManager.beginTransaction().replace(R.id.list_fragment_container, EditNoteFragment.newInstance(note));
+            currentNote = note;
+        }
     }
 
     public void openFragment(Fragment fragment) {

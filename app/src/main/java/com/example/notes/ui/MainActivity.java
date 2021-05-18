@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
     private boolean isLandscape;
     private Note currentNote;
     private DrawerLayout drawerLayout;
-    private Toolbar toolbar;
-    private NoteViewModel viewModel;
     private AppRouter router;
 
     @Override
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
         isLandscape = getResources().getBoolean(R.bool.isLandscape);
         router = new AppRouter(getSupportFragmentManager());
         initDrawer();
-        initViewModel();
         if (savedInstanceState == null) {
             router.openFragment(new FragmentList());
             if (isLandscape && currentNote != null) {
@@ -52,9 +49,6 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
 
     }
 
-    private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(NoteViewModel.class);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,15 +64,9 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
         return super.onOptionsItemSelected(item);
     }
 
-    private void setDefaultNote() {
-        NoteRepositoryImpl noteRepository = new NoteRepositoryImpl();
-        if (!noteRepository.getNotes().isEmpty()) {
-            currentNote = noteRepository.getNotes().get(0);
-        }
-    }
 
     private void initDrawer() {
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -112,10 +100,12 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
     }
 
     private void initFragmentNotes(Note note) {
-        if (isLandscape) {
-            router.initLandscape(note);
-        } else {
-            router.openFragment(FragmentNotes.createFragmentNotes(note));
+        if(note != null){
+            if (isLandscape) {
+                router.initLandscape(note);
+            } else {
+                router.openFragment(FragmentNotes.createFragmentNotes(note));
+            }
         }
     }
 

@@ -6,4 +6,9 @@
     <string name="default_info_about_user">default info about user</string>
     <string name="close">close</string>
     <string name="open">open</string>
+    <string name="update">update</string>
+    <string name="cancel">cancel</string>
+    <string name="edit_note_content">Note content</string>
+    <string name="add_note">Add Note</string>
+    <string name="hint_title">Title</string>
 </resources>

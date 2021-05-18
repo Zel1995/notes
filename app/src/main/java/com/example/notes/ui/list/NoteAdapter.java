@@ -33,19 +33,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         return longClickPosition;
     }
 
-    public void setLongClickPosition(int longClickPosition) {
-        this.longClickPosition = longClickPosition;
-    }
-
     public interface NoteAdapterClickListener {
         void noteAdapterClickListener(Note note);
+    }
+    public Note getNoteByPosition(int position){
+        if(data.size()> position) return data.get(position);
+        return new Note("empty","empty","empty");
     }
 
     public void setData(List<Note> toAdd) {
         NotesDiffutilCallback callback = new NotesDiffutilCallback(this.data, toAdd);
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(callback);
 
+        this.data.clear();
         this.data.addAll(toAdd);
+
         result.dispatchUpdatesTo(this);
     }
     @NonNull
@@ -78,20 +80,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.item_title);
             content = itemView.findViewById(R.id.item_content);
             date = itemView.findViewById(R.id.item_date);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        listener.noteAdapterClickListener(data.get(getAdapterPosition()));
-                    }
-                }
+            fragmentList.registerForContextMenu(itemView);
+            itemView.setOnLongClickListener(v -> {
+                longClickPosition = getAdapterPosition();
+                itemView.showContextMenu();
+                return true;
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    itemView.showContextMenu();
-                    longClickPosition = getAdapterPosition();
-                    return true;
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.noteAdapterClickListener(data.get(getAdapterPosition()));
                 }
             });
         }

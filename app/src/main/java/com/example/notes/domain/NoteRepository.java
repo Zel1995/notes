@@ -8,4 +8,6 @@ public interface NoteRepository {
     void addNote(Note note);
 
     void deleteNote(int longClickPosition);
+
+    void updateNote(int longClickPosition, Note note);
 }
