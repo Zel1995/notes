@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,7 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
-public class EditNoteFragment extends Fragment {
+public class EditNoteFragment extends DialogFragment {
     private DatePicker datePicker;
     private TextInputEditText title;
     private TextInputEditText content;
@@ -29,7 +30,8 @@ public class EditNoteFragment extends Fragment {
     private MaterialButton btnUpdate;
     private MaterialButton btnCancel;
     private String date;
-    private Note note;
+    private Note oldNote;
+    private Note newNote;
 
     public static final String ARG_POSITION = "ARG_POSITION";
     public static final String ARG_NOTE = "ARG_NOTE";
@@ -38,7 +40,7 @@ public class EditNoteFragment extends Fragment {
         EditNoteFragment editNoteFragment = new EditNoteFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, position);
-        args.putParcelable(ARG_NOTE,note);
+        args.putParcelable(ARG_NOTE, note);
         editNoteFragment.setArguments(args);
         return editNoteFragment;
     }
@@ -54,8 +56,8 @@ public class EditNoteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(ARG_NOTE);
-            date = note.getCurrentDate();
+            oldNote = getArguments().getParcelable(ARG_NOTE);
+            date = oldNote.getCurrentDate();
         }
         initViewModel();
         initViews(view);
@@ -76,38 +78,33 @@ public class EditNoteFragment extends Fragment {
 
     private void initListeners() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            datePicker.setOnDateChangedListener((view, year, monthOfYear, dayOfMonth) -> date = dayOfMonth + "."+ monthOfYear + "." + year);
+            datePicker.setOnDateChangedListener((view, year, monthOfYear, dayOfMonth) -> date = dayOfMonth + "." + monthOfYear + "." + year);
         }
         btnUpdate.setOnClickListener(v -> {
             if (getArguments() != null) {
-               initNote();
-                viewModel.updateClicked(getArguments().getInt(ARG_POSITION),note);
+                initNote();
+                viewModel.updateClicked(oldNote, newNote);
             }
-            if(getActivity() instanceof MainActivity){
-                getActivity().onBackPressed();
-            }
+            dismiss();
         });
-        btnCancel.setOnClickListener(v -> {
-            if(getActivity() instanceof MainActivity){
-                getActivity().onBackPressed();
-            }
-        });
+        btnCancel.setOnClickListener(v -> dismiss());
     }
 
     private void initNote() {
         String myTitle;
         String myContent;
-        if(Objects.requireNonNull(title.getText()).length() > 0){
+        if (Objects.requireNonNull(title.getText()).length() > 0) {
             myTitle = title.getText().toString();
-        }else {
-            myTitle = note.getTitle();
+
+        } else {
+            myTitle = oldNote.getTitle();
         }
-        if(Objects.requireNonNull(content.getText()).length() >0){
+        if (Objects.requireNonNull(content.getText()).length() > 0) {
             myContent = content.getText().toString();
-        }else {
-            myContent = note.getContent();
+        } else {
+            myContent = oldNote.getContent();
         }
 
-        note =  new Note(myTitle,myContent,date);
+        newNote = new Note(myTitle, myContent, date);
     }
 }

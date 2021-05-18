@@ -1,11 +1,10 @@
 package com.example.notes.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+@Deprecated//реализовал через Firebase
+public class NoteRepositoryImpl {
 
-public class NoteRepositoryImpl implements NoteRepository {
-    List <Note> notes;
+    /*List <Note> notes;
     public List<Note> getNotes() {
 
         if(notes == null) {
@@ -31,6 +30,6 @@ public class NoteRepositoryImpl implements NoteRepository {
         getNotes().remove(longClickPosition);
         getNotes().add(longClickPosition,note);
     }
-
+*/
 
 }

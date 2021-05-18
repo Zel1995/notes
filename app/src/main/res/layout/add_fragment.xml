@@ -8,7 +8,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="@string/hint_title"
@@ -24,7 +24,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="@string/edit_note_content"
@@ -56,7 +56,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="@string/cancel"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_add_note"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 

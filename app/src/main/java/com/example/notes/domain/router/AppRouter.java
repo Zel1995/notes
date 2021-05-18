@@ -39,8 +39,8 @@ public class AppRouter {
                 .addToBackStack(null)
                 .commit();
     }
-
-    public void showAddFragment() {
+    @Deprecated
+    public void showAddFragment() {//переделал в DialogFragment
         fragmentManager.beginTransaction().replace(R.id.list_fragment_container, new AddFragment()).addToBackStack(null).commit();
     }
 }

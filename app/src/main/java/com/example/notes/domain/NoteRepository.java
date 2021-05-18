@@ -2,12 +2,14 @@ package com.example.notes.domain;
 
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public interface NoteRepository {
-    List<Note> getNotes();
+    List<Note> getNotes(MyCallback<List<Note>> callback);
 
-    void addNote(Note note);
+    void addNote(String title,String content,MyCallback<Note> callback);
 
-    void deleteNote(int longClickPosition);
+    void deleteNote(Note item, MyCallback<Object> callback);
 
-    void updateNote(int longClickPosition, Note note);
+    void updateNote(Note oldNote, Note newNote,MyCallback<Object>callback);
 }

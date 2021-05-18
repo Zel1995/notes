@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_add) {
-            router.showAddFragment();
+            new AddFragment().show(getSupportFragmentManager(),getString(R.string.add_note_fragment));
+            //router.showAddFragment();
         }
         return super.onOptionsItemSelected(item);
     }
