@@ -11,4 +11,7 @@
     <string name="edit_note_content">Note content</string>
     <string name="add_note">Add Note</string>
     <string name="hint_title">Title</string>
+    <string name="add_note_fragment">addFragment</string>
+    <string name="edit_note_fragment">editNoteFragment</string>
+    <string name="no">no</string>
 </resources>

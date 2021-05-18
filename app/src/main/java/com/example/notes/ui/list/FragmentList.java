@@ -1,6 +1,8 @@
 package com.example.notes.ui.list;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,18 +14,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notes.R;
 import com.example.notes.domain.Note;
-import com.example.notes.domain.NoteRepositoryImpl;
 import com.example.notes.ui.MainActivity;
 import com.example.notes.ui.edit.EditNoteFragment;
-
-import java.util.List;
 
 public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterClickListener {
     private NoteClickListener onListClick;
@@ -73,29 +71,31 @@ public class FragmentList extends Fragment implements NoteAdapter.NoteAdapterCli
     private void initRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view);
         adapter = new NoteAdapter(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         adapter.setListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
     }
+
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        requireActivity().getMenuInflater().inflate(R.menu.context_menu,menu);
+        requireActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-       if(item.getItemId() == R.id.action_update){
-            if(getActivity() instanceof MainActivity){
+        if (item.getItemId() == R.id.action_update) {
+            if (getActivity() instanceof MainActivity) {
                 int position = adapter.getLongClickPosition();
-                ((MainActivity) getActivity()).getRouter().openFragment(EditNoteFragment.newInstance(position,adapter.getNoteByPosition(position)));
+                EditNoteFragment.newInstance(position,adapter.getNoteByPosition(position)).show(getChildFragmentManager(),getString(R.string.edit_note_fragment));
             }
             return true;
-        }else if(item.getItemId() == R.id.action_delete){
-            viewModel.deleteClicked(adapter.getLongClickPosition());
-            Toast.makeText(requireContext(),"delete",Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.action_delete) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Title").setMessage("Do you wanna delete it").setIcon(R.drawable.ic_attention).setPositiveButton("yes", (dialog, which) -> viewModel.deleteClicked(adapter.getNoteByPosition(adapter.getLongClickPosition()))).setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
+            builder.create().show();
             return true;
         }
         return super.onContextItemSelected(item);

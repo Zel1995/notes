@@ -1,28 +1,25 @@
 package com.example.notes.domain;
 
-import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 
 public class Note implements Parcelable {
-    private int position;
+    private String id;
     private String title;
     private String content;
     private String currentDate;
 
-    public Note(int position, String title, String content, String currentDate) {
-        this.position = position;
+    public Note(String id, String title, String content, String currentDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.currentDate = currentDate;
     }
 
     protected Note(Parcel in) {
-        position = in.readInt();
+        id = in.readString();
         title = in.readString();
         content = in.readString();
         currentDate = in.readString();
@@ -40,8 +37,8 @@ public class Note implements Parcelable {
         return currentDate;
     }
 
-    public int getPosition() {
-        return position;
+    public String getId() {
+        return id;
     }
 
     public Note(String title, String content, String currentDate) {
@@ -57,7 +54,7 @@ public class Note implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return Objects.equals(position, note.position) &&
+        return Objects.equals(id, note.id) &&
                 Objects.equals(title, note.title) &&
                 Objects.equals(content, note.content)&&
                 Objects.equals(currentDate, note.currentDate);
@@ -65,7 +62,7 @@ public class Note implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, title, content,currentDate);
+        return Objects.hash(id, title, content,currentDate);
     }
 
     @Override
@@ -87,7 +84,7 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(position);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(content);
         dest.writeString(currentDate);
