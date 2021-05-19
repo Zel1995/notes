@@ -8,12 +8,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.notes.R;
 import com.example.notes.domain.Note;
 import com.example.notes.ui.list.NoteViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -21,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class AddFragment extends Fragment {
+public class AddFragment extends BottomSheetDialogFragment {
 
     private TextInputEditText editTitle;
     private TextInputEditText editContent;
@@ -32,7 +33,7 @@ public class AddFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.add_fragment,container,false);
+        return inflater.inflate(R.layout.add_fragment, container, false);
     }
 
     @Override
@@ -49,18 +50,15 @@ public class AddFragment extends Fragment {
             String content = Objects.requireNonNull(editContent.getText()).toString();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
             String date = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-            Note note = new Note(title,content,date);
+            Note note = new Note(title, content, date);
             viewModel.addClicked(note);
-            editTitle.setText("");
-            editContent.setText("");
-            if(getActivity() instanceof MainActivity){
-                getActivity().onBackPressed();
-            }
+            clearFields();
+            dismiss();
         });
         btnCancel.setOnClickListener(v -> {
-            if(getActivity() instanceof MainActivity){
-                getActivity().onBackPressed();
-            }});
+            clearFields();
+            dismiss();
+        });
     }
 
 
@@ -69,6 +67,10 @@ public class AddFragment extends Fragment {
         editContent = view.findViewById(R.id.edit_content);
         btnAddNote = view.findViewById(R.id.btn_add_note);
         btnCancel = view.findViewById(R.id.btn_cancel_add);
+    }
+    private void clearFields() {
+        editTitle.setText("");
+        editContent.setText("");
     }
 
     private void initViewModel() {
