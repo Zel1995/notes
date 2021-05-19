@@ -71,10 +71,27 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_list);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_list: {
+                router.openFragment(new FragmentList());
+                break;
+            }
+            case R.id.nav_info: {
+                router.openFragment(new FragmentAppInfo());
+                break;
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 
@@ -110,22 +127,6 @@ public class MainActivity extends AppCompatActivity implements FragmentList.Note
         }
     }
 
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_list: {
-                router.openFragment(new FragmentList());
-                break;
-            }
-            case R.id.nav_info: {
-                router.openFragment(new FragmentAppInfo());
-                break;
-            }
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     @Override
     public void onBackPressed() {

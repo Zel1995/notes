@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.notes.R;
 import com.example.notes.domain.Note;
 import com.example.notes.ui.list.NoteViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -21,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class AddFragment extends DialogFragment {
+public class AddFragment extends BottomSheetDialogFragment {
 
     private TextInputEditText editTitle;
     private TextInputEditText editContent;
@@ -51,14 +52,12 @@ public class AddFragment extends DialogFragment {
             String date = simpleDateFormat.format(new Date(System.currentTimeMillis()));
             Note note = new Note(title, content, date);
             viewModel.addClicked(note);
-            editTitle.setText("");
-            editContent.setText("");
+            clearFields();
             dismiss();
         });
         btnCancel.setOnClickListener(v -> {
+            clearFields();
             dismiss();
-        /*  if(getActivity() instanceof MainActivity){
-            getActivity().onBackPressed();}*/
         });
     }
 
@@ -68,6 +67,10 @@ public class AddFragment extends DialogFragment {
         editContent = view.findViewById(R.id.edit_content);
         btnAddNote = view.findViewById(R.id.btn_add_note);
         btnCancel = view.findViewById(R.id.btn_cancel_add);
+    }
+    private void clearFields() {
+        editTitle.setText("");
+        editContent.setText("");
     }
 
     private void initViewModel() {

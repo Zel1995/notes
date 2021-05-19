@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,12 +18,15 @@ import com.example.notes.R;
 import com.example.notes.domain.Note;
 import com.example.notes.ui.MainActivity;
 import com.example.notes.ui.list.NoteViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
-public class EditNoteFragment extends DialogFragment {
+public class EditNoteFragment extends BottomSheetDialogFragment {
     private DatePicker datePicker;
     private TextInputEditText title;
     private TextInputEditText content;

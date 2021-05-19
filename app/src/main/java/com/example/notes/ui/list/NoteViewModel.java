@@ -2,8 +2,10 @@ package com.example.notes.ui.list;
 
 import android.text.PrecomputedText;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.notes.domain.FirestoreNoteRepository;
@@ -24,8 +26,23 @@ public class NoteViewModel extends ViewModel {
 
     private final NoteRepository noteRepository = new FirestoreNoteRepository();
 
-    public LiveData<List<Note>>getNotesLiveData(){
-        return notesLiveData;
+    public LiveData<List<AdapterItem>>getNotesLiveData(){
+        return Transformations.map(notesLiveData, new Function<List<Note>, List<AdapterItem>>() {
+            @Override
+            public List<AdapterItem> apply(List<Note> input) {
+                ArrayList<AdapterItem> result =  new ArrayList<>();
+                String date = null;
+                for (Note note : input){
+                    String noteDate = note.getCurrentDate();
+                    if(!noteDate.equals(date)){
+                        result.add(new HeaderItem(noteDate));
+                        date = noteDate;
+                    }
+                    result.add(new NoteItem(note));
+                }
+                return result;
+            }
+        });
     }
 
     public void requestNotes(){

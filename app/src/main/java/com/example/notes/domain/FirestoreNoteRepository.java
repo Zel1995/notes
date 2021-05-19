@@ -24,7 +24,7 @@ public class FirestoreNoteRepository implements NoteRepository {
 
     @Override
     public List<Note> getNotes(MyCallback<List<Note>> callback) {
-        firestore.collection(NOTES).get().addOnCompleteListener(task -> {
+        firestore.collection(NOTES).orderBy(DATE).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 ArrayList<Note> notes = new ArrayList<>();
                 List<DocumentSnapshot> docs = task.getResult().getDocuments();

@@ -15,11 +15,14 @@ import com.example.notes.domain.Note;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final static int NOTE = 0;
+    private final static int HEADER = 1;
+
     private NoteAdapterClickListener listener;
-    private List<Note> data = new ArrayList<>();
+    private List<AdapterItem> data = new ArrayList<>();
     private int longClickPosition = -1;
-    private FragmentList fragmentList;
+    private final FragmentList fragmentList;
 
     public NoteAdapter(FragmentList fragmentList) {
         this.fragmentList = fragmentList;
@@ -36,12 +39,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public interface NoteAdapterClickListener {
         void noteAdapterClickListener(Note note);
     }
-    public Note getNoteByPosition(int position){
-        if(data.size()> position) return data.get(position);
-        return new Note("empty","empty","empty");
+
+    public Note getNoteByPosition(int position) {
+        if (data.size() > position) return (Note) (data.get(position)).getItem();
+        return new Note("empty", "empty", "empty");
     }
 
-    public void setData(List<Note> toAdd) {
+    public void setData(List<AdapterItem> toAdd) {
         NotesDiffutilCallback callback = new NotesDiffutilCallback(this.data, toAdd);
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(callback);
 
@@ -50,32 +54,70 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
         result.dispatchUpdatesTo(this);
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (data.get(position) instanceof HeaderItem) {
+            return HEADER;
+        }
+        if (data.get(position) instanceof NoteItem) {
+            return NOTE;
+        }
+        return super.getItemViewType(position);
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == HEADER) {
+
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_item, parent, false);
+            return new HeaderViewHolder(view);
+        }
+        if (viewType == NOTE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false);
+            return new NotesViewHolder(view);
+        }
+        throw new IllegalStateException("Can't do it");
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.title.setText(data.get(position).getTitle());
-        holder.content.setText(data.get(position).getContent());
-        holder.date.setText(data.get(position).getCurrentDate());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        AdapterItem item = data.get(position);
+        if (holder instanceof NotesViewHolder) {
+            NotesViewHolder notesViewHolder = (NotesViewHolder) holder;
+            Note note = (Note) item.getItem();
+            notesViewHolder.bind(note);
+        }
+        if (holder instanceof HeaderViewHolder) {
+            String title = (String) item.getItem();
+            ((HeaderViewHolder) holder).textView.setText(title);
+        }
 
     }
+
 
     @Override
     public int getItemCount() {
         return data == null ? 0 : data.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
+
+        public HeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.title_tv);
+        }
+    }
+
+    class NotesViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView content;
         TextView date;
 
-        public ViewHolder(@NonNull View itemView) {
+        public NotesViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.item_title);
             content = itemView.findViewById(R.id.item_content);
@@ -88,19 +130,25 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             });
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.noteAdapterClickListener(data.get(getAdapterPosition()));
+                    listener.noteAdapterClickListener((Note) (data.get(getAdapterPosition())).getItem());
                 }
             });
+        }
+
+        public void bind(Note note) {
+            title.setText(note.getTitle());
+            content.setText(note.getContent());
+            date.setText(note.getCurrentDate());
         }
 
     }
 
     public static class NotesDiffutilCallback extends DiffUtil.Callback {
 
-        private final List<Note> oldList;
-        private final List<Note> newList;
+        private final List<AdapterItem> oldList;
+        private final List<AdapterItem> newList;
 
-        public NotesDiffutilCallback(List<Note> oldList, List<Note> newList) {
+        public NotesDiffutilCallback(List<AdapterItem> oldList, List<AdapterItem> newList) {
             this.oldList = oldList;
             this.newList = newList;
         }
@@ -117,7 +165,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.get(oldItemPosition).getContent().equals(newList.get(newItemPosition).getContent());
+            return oldList.get(oldItemPosition).getUniqueTag().equals(newList.get(newItemPosition).getUniqueTag());
         }
 
         @Override
